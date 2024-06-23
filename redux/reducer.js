@@ -1,84 +1,94 @@
 // reducers.js
 import {
-    ADD_TODO,
-    TOGGLE_TODO,
-    REMOVE_TODO,
-    MARK_COMPLETED,
-    MARK_INCOMPLETE,
-    FILTER_TODOS,
-    MARK_ALL_COMPLETED,
-    UPDATE_SEARCH_TERM,
-  } from './action';
-  
-  const initialState = { todos: [], filter: 'ALL', searchTerm: '' };
-  
-  const todoReducer = (state = initialState, action) => {
-    switch (action.type) {
+  ADD_TODO,
+  TOGGLE_TODO,
+  REMOVE_TODO,
+  MARK_COMPLETED,
+  MARK_INCOMPLETE,
+  FILTER_TODOS,
+  MARK_ALL_COMPLETED,
+  UPDATE_SEARCH_TERM,
+  ADD_TODO_SUCCESS,
+  ADD_TODO_FAILURE
+} from './action';
+
+const initialState = { 
+  todos: [], 
+  filter: 'ALL', 
+  searchTerm: '', 
+  error: null, 
+  loading: false, 
+  message: null 
+};
+
+const todoReducer = (state = initialState, action) => {
+  switch (action.type) {
       case ADD_TODO:
-        return {
-          todos: [...state.todos, { text: action.payload.text, completed: false }],
-          filter: state.filter,
-          searchTerm: state.searchTerm,
-        };
-  
+          return { ...state, loading: true, error: null };
+
+      case ADD_TODO_SUCCESS:
+          return {
+              ...state,
+              todos: [...state.todos, { ...action.payload.todo, id: state.todos.length }],
+              loading: false,
+              error: null,
+              message: 'Todo added successfully!',
+          };
+
+      case ADD_TODO_FAILURE:
+          return { ...state, loading: false, error: action.payload.error, message: null };
+
       case TOGGLE_TODO:
-        return {
-          todos: state.todos.map((todo, index) =>
-            index === action.payload.id ? { ...todo, completed: !todo.completed } : todo
-          ),
-          filter: state.filter,
-          searchTerm: state.searchTerm,
-        };
-  
+          return {
+              ...state,
+              todos: state.todos.map((todo, index) =>
+                  index === action.payload.id ? { ...todo, completed: !todo.completed } : todo
+              ),
+          };
+
       case REMOVE_TODO:
-        return {
-          todos: state.todos.filter((todo, index) => index !== action.payload.id),
-          filter: state.filter,
-          searchTerm: state.searchTerm,
-        };
-  
+          return {
+              ...state,
+              todos: state.todos.filter((todo, index) => index !== action.payload.id),
+          };
+
       case MARK_COMPLETED:
-        return {
-          todos: state.todos.map((todo, index) =>
-            index === action.payload.id ? { ...todo, completed: true } : todo
-          ),
-          filter: state.filter,
-          searchTerm: state.searchTerm,
-        };
-  
+          return {
+              ...state,
+              todos: state.todos.map((todo, index) =>
+                  index === action.payload.id ? { ...todo, completed: true } : todo
+              ),
+          };
+
       case MARK_INCOMPLETE:
-        return {
-          todos: state.todos.map((todo, index) =>
-            index === action.payload.id ? { ...todo, completed: false } : todo
-          ),
-          filter: state.filter,
-          searchTerm: state.searchTerm,
-        };
-  
+          return {
+              ...state,
+              todos: state.todos.map((todo, index) =>
+                  index === action.payload.id ? { ...todo, completed: false } : todo
+              ),
+          };
+
       case FILTER_TODOS:
-        return {
-          todos: state.todos,
-          filter: action.payload.filter,
-          searchTerm: state.searchTerm,
-        };
-  
+          return {
+              ...state,
+              filter: action.payload.filter,
+          };
+
       case UPDATE_SEARCH_TERM:
-        return {
-          todos: state.todos,
-          filter: state.filter,
-          searchTerm: action.payload.searchTerm,
-        };
-  
+          return {
+              ...state,
+              searchTerm: action.payload.searchTerm,
+          };
+
       case MARK_ALL_COMPLETED:
-        return {
-          todos: state.todos.map((todo) => ({ ...todo, completed: true })),
-          filter: state.filter,
-          searchTerm: state.searchTerm,
-        };
-  
+          return {
+              ...state,
+              todos: state.todos.map((todo) => ({ ...todo, completed: true })),
+          };
+
       default:
-        return state;
-    }
-  };
-  
-  export default todoReducer;
+          return state;
+  }
+};
+
+export default todoReducer;

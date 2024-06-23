@@ -7,12 +7,25 @@ import {
     FILTER_TODOS,
     MARK_ALL_COMPLETED,
     UPDATE_SEARCH_TERM,
+    ADD_TODO_SUCCESS,
+    ADD_TODO_FAILURE
 } from "./type";
+import axios from "axios";
 
 export const addTodo = (text) => ({
     type: ADD_TODO,
     payload: { text },
-  });
+});
+
+export const addTodoSuccess = (todo) => ({
+    type: ADD_TODO_SUCCESS,
+    payload: { todo },
+});
+
+export const addTodoFailure = (error) => ({
+    type: ADD_TODO_FAILURE,
+    payload: { error },
+});
   
   export const toggleTodo = (id) => ({
     type: TOGGLE_TODO,
@@ -47,3 +60,18 @@ export const addTodo = (text) => ({
     type: UPDATE_SEARCH_TERM,
     payload: { searchTerm },
   });
+
+  export const addTodoAsync = (text) => {
+    return async (dispatch) => {
+        dispatch(addTodo(text));
+        try {
+            const response = await axios.post('https://jsonplaceholder.typicode.com/todos', {
+                title: text,
+                completed: false,
+            });
+            dispatch(addTodoSuccess(response.data));
+        } catch (error) {
+            dispatch(addTodoFailure(error.message));
+        }
+    };
+};
