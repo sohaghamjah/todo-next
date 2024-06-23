@@ -9,8 +9,11 @@ import {
   MARK_ALL_COMPLETED,
   UPDATE_SEARCH_TERM,
   ADD_TODO_SUCCESS,
-  ADD_TODO_FAILURE
-} from './action';
+  ADD_TODO_FAILURE,
+  FETCH_TODOS_REQUEST,
+  FETCH_TODOS_SUCCESS,
+  FETCH_TODOS_FAILURE,
+} from './type';
 
 const initialState = { 
   todos: [], 
@@ -37,6 +40,15 @@ const todoReducer = (state = initialState, action) => {
 
       case ADD_TODO_FAILURE:
           return { ...state, loading: false, error: action.payload.error, message: null };
+
+      case FETCH_TODOS_REQUEST:
+          return { ...state, loading: true, error: null };
+
+      case FETCH_TODOS_SUCCESS:
+          return { ...state, todos: action.payload.todos, loading: false, error: null };
+
+      case FETCH_TODOS_FAILURE:
+          return { ...state, loading: false, error: action.payload.error };
 
       case TOGGLE_TODO:
           return {

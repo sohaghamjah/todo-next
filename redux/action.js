@@ -8,7 +8,10 @@ import {
     MARK_ALL_COMPLETED,
     UPDATE_SEARCH_TERM,
     ADD_TODO_SUCCESS,
-    ADD_TODO_FAILURE
+    ADD_TODO_FAILURE,
+    FETCH_TODOS_SUCCESS,
+    FETCH_TODOS_FAILURE,
+    FETCH_TODOS_REQUEST
 } from "./type";
 import axios from "axios";
 
@@ -60,6 +63,34 @@ export const addTodoFailure = (error) => ({
     type: UPDATE_SEARCH_TERM,
     payload: { searchTerm },
   });
+
+  // Fetch Todos
+
+  const fetchTodosRequest = () => ({
+      type: FETCH_TODOS_REQUEST,
+  });
+
+  const fetchTodosSuccess = (todos) => ({
+      type: FETCH_TODOS_SUCCESS,
+      payload: { todos },
+  });
+
+  const fetchTodosFailure = (error) => ({
+      type: FETCH_TODOS_FAILURE,
+      payload: { error },
+  });
+
+  export const fetchTodos = () => {
+      return async (dispatch) => {
+          dispatch(fetchTodosRequest());
+          try {
+              const response = await axios.get('https://jsonplaceholder.typicode.com/todos');
+              dispatch(fetchTodosSuccess(response.data));
+          } catch (error) {
+              dispatch(fetchTodosFailure(error.message));
+          }
+      };
+  };
 
   export const addTodoAsync = (text) => {
     return async (dispatch) => {
