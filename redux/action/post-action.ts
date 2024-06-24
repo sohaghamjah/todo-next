@@ -4,7 +4,8 @@ import {
     SET_TITLE,
     SET_BODY,
     CREATE_POST,
-    CHANGE_INPUT_VALUE
+    CHANGE_INPUT_VALUE,
+    RESET_POST_INPUT
  } from "@/redux/type/post-type";
 import axios from "axios";
 import { Toaster } from "@/app/components/toaster";
@@ -28,18 +29,20 @@ import { Toaster } from "@/app/components/toaster";
     dispatch({ type: CREATE_POST, payload: response });
 
     await axios.post('https://jsonplaceholder.typicode.com/posts', post)
-    .then((res) => {
+    .then((res) => {        
         response.status = true;
         response.isLoading = false;
         response.message = "Post Created Successful!";
         response.data =  res.data;
-        Toaster('success', response.message);
+        Toaster('success', response.message);        
         dispatch({ type: CREATE_POST, payload: response });
+        dispatch({ type: RESET_POST_INPUT });
     })
     .catch((error) => {
         response.status = false;
         response.isLoading = false;
         response.message = "Something Went Wrong, Please Try Again!!";
+        Toaster('error', response.message);
         dispatch({ type: CREATE_POST, payload: response });
     });
 

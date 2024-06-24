@@ -2,7 +2,8 @@ import {
     SET_TITLE,
     SET_BODY,
     CREATE_POST,
-    CHANGE_INPUT_VALUE
+    CHANGE_INPUT_VALUE,
+    RESET_POST_INPUT
  } from "@/redux/type/post-type";
 
  interface PostState {
@@ -40,6 +41,11 @@ import {
                 isLoading: action.payload.isLoading,
                 status: action.payload.status,
                 data: action.payload.data,
+            }
+        case RESET_POST_INPUT: // Handle the new action
+            return {
+                ...state,
+                postInput: initialState.postInput,
             }
         default:
             return state
