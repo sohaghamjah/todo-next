@@ -1,8 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
-import todoReducer from "./reducer";
+import todoReducer from "./reducer.js";
+import postReducer from "./reducer/postReducer";
 
 export default configureStore({
     reducer: {
-        todo: todoReducer
+        todo: todoReducer,
+        post: postReducer
     }
 });
